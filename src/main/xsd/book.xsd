@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- definition of complex elements -->
+    <xs:complexType name="template">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="option" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="book">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="templates" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="template" maxOccurs="unbounded" type="template"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="pages">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="page" maxOccurs="100">
+                                <xs:complexType mixed="true">
+                                    <xs:sequence>
+                                        <xs:element name="x" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:attribute name="styles" type="xs:string"/>
+                                                <xs:attribute name="color" type="xs:string"/>
+                                                <xs:attribute name="auto-type" type="xs:string"/>
+                                                <xs:attribute name="page" type="xs:string"/>
+                                                <xs:attribute name="url" type="xs:string"/>
+                                                <xs:attribute name="hover-text" type="xs:string"/>
+                                                <xs:attribute name="execute" type="xs:string"/>
+                                                <xs:attribute name="open-book" type="xs:string"/>
+                                                <xs:attribute name="give-book" type="xs:string"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 
 public final class DynamicBooksPlugin extends JavaPlugin {
 
-    public static final String OPEN_COMMAND = "dynbooks open";
-    public static final String GIVE_COMMAND = "dynbooks give";
+    public static final String OPEN_COMMAND = "library open";
+    public static final String GIVE_COMMAND = "library give";
     public static final String BOOK_PREFIX = "Ancient Book";
 
     private BookManager bookManager;

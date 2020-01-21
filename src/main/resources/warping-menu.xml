@@ -1,0 +1,57 @@
+<book id="Warping" author="Guides Of Middle Earth">
+    <templates>
+        <template>
+            <name>warp-header</name>
+            <options>
+                <color>dark_green</color>
+                <hover-text>Open $1</hover-text>
+                <styles>bold</styles>
+            </options>
+        </template>
+        <template>
+            <name>ring</name>
+            <options>
+                <color>gold</color>
+                <styles>bold</styles>
+            </options>
+        </template>
+        <template>
+            <name>warp</name>
+            <options>
+                <execute>warp $1</execute>
+                <color>dark_gray</color>
+            </options>
+        </template>
+    </templates>
+    <page ref="content">
+        <line>   <obj color="dark_gray">Visit all places in</obj></line>
+        <line>     <tpl ref="ring">Middle‐Earth</tpl></line>
+        <line/>
+        <line>        <obj color="dark_aqua" hover-text="Open the dynamic MCME map" url="http://map.mcmiddleearth.com/">Open Map</obj></line>
+        <line/>
+        <line>  <tpl ref="ring">◯</tpl> <tpl ref="warp-header" page="exampleRef" arg1="Eriador">Eriador</tpl></line>
+        <line>  <tpl ref="ring">◯</tpl> <tpl ref="warp-header" page="exampleRef" arg1="Moria">Moria</tpl></line>
+        <line>  <tpl ref="ring">◯</tpl> <tpl ref="warp-header" page="exampleRef" arg1="Rohan">Rohan</tpl></line>
+        <line>  <tpl ref="ring">◯</tpl> <tpl ref="warp-header" page="exampleRef" arg1="Gondor">Gondor</tpl></line>
+        <line>  <tpl ref="ring">◯</tpl> <tpl ref="warp-header" page="exampleRef" arg1="Mordor">Mordor</tpl><obj color="red">*</obj></line>
+        <line/>
+        <line/>
+        <line>   <obj color="dark_gray">Return to </obj><obj color="red" styles="bold" execute="mvtp world" hover-text="Warp to Spawn">Spawn</obj></line>
+    </page>
+    <page ref="exampleRef">
+        <line><tpl ref="ring">Eriador</tpl>          (1/2)</line>
+        <line/>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Bag End</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Lond Daer</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Tharbad</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Rivendell</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Bree</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Hobbiton</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Weathertop</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Ost-In-Edhil</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Annuminas</tpl> <obj color="dark_aqua">[?]</obj></line>
+        <line><tpl ref="ring">◯</tpl> <tpl ref="warp" arg1="Bag End">Southern Marshes</tpl></line>
+        <line/>
+        <line><obj color="red" styles="bold" page="content" hover-text="Back to Regions">Back to Regions</obj></line>
+    </page>
+</book>

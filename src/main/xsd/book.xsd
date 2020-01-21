@@ -4,7 +4,21 @@
     <xs:complexType name="template">
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
-            <xs:element name="option" maxOccurs="unbounded"/>
+            <xs:element name="options">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="auto-type" type="xs:string"/>
+                        <xs:element name="color" type="xs:string"/>
+                        <xs:element name="execute" type="xs:string"/>
+                        <xs:element name="give-book" type="xs:string"/>
+                        <xs:element name="hover-text" type="xs:string"/>
+                        <xs:element name="open-book" type="xs:string"/>
+                        <xs:element name="page" type="xs:string"/>
+                        <xs:element name="styles" type="xs:string"/>
+                        <xs:element name="url" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 
@@ -18,33 +32,62 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="pages">
+                <xs:element name="page" maxOccurs="100">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="page" maxOccurs="100">
+                            <xs:element name="line" maxOccurs="14">
                                 <xs:complexType mixed="true">
-                                    <xs:sequence>
-                                        <xs:element name="x" maxOccurs="unbounded">
+                                    <xs:choice maxOccurs="unbounded">
+                                        <xs:element name="tpl" maxOccurs="unbounded">
                                             <xs:complexType>
-                                                <xs:attribute name="styles" type="xs:string"/>
-                                                <xs:attribute name="color" type="xs:string"/>
-                                                <xs:attribute name="auto-type" type="xs:string"/>
-                                                <xs:attribute name="page" type="xs:string"/>
-                                                <xs:attribute name="url" type="xs:string"/>
-                                                <xs:attribute name="hover-text" type="xs:string"/>
-                                                <xs:attribute name="execute" type="xs:string"/>
-                                                <xs:attribute name="open-book" type="xs:string"/>
-                                                <xs:attribute name="give-book" type="xs:string"/>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute name="ref" type="xs:string" use="required"/>
+                                                        <xs:attribute name="arg1" type="xs:string"/>
+                                                        <xs:attribute name="arg2" type="xs:string"/>
+                                                        <xs:attribute name="arg3" type="xs:string"/>
+                                                        <xs:attribute name="arg4" type="xs:string"/>
+                                                        <xs:attribute name="arg5" type="xs:string"/>
+                                                        <xs:attribute name="styles" type="xs:string"/>
+                                                        <xs:attribute name="color" type="xs:string"/>
+                                                        <xs:attribute name="auto-type" type="xs:string"/>
+                                                        <xs:attribute name="page" type="xs:string"/>
+                                                        <xs:attribute name="url" type="xs:string"/>
+                                                        <xs:attribute name="hover-text" type="xs:string"/>
+                                                        <xs:attribute name="execute" type="xs:string"/>
+                                                        <xs:attribute name="open-book" type="xs:string"/>
+                                                        <xs:attribute name="give-book" type="xs:string"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
                                             </xs:complexType>
                                         </xs:element>
-                                    </xs:sequence>
+                                        <xs:element name="obj" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute name="styles" type="xs:string"/>
+                                                        <xs:attribute name="color" type="xs:string"/>
+                                                        <xs:attribute name="auto-type" type="xs:string"/>
+                                                        <xs:attribute name="page" type="xs:string"/>
+                                                        <xs:attribute name="url" type="xs:string"/>
+                                                        <xs:attribute name="hover-text" type="xs:string"/>
+                                                        <xs:attribute name="execute" type="xs:string"/>
+                                                        <xs:attribute name="open-book" type="xs:string"/>
+                                                        <xs:attribute name="give-book" type="xs:string"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:choice>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
+                        <xs:attribute name="ref" type="xs:string"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
             <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="author" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>

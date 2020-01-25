@@ -1,30 +1,78 @@
 package com.mcmiddleearth.plugins.dynamicbooks.library;
 
 import com.mcmiddleearth.plugins.dynamicbooks.books.Book;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public abstract class BookLibrary {
+
+    private ScheduledExecutorService scheduledThreadPoolExecutor;
+    private ZonedDateTime lastUpdate;
 
     private List<LibraryBookAddedListener> bookAddedListeners = new ArrayList<>();
     private List<LibraryBookChangedListener> bookChangedListeners = new ArrayList<>();
     private List<LibraryBookRemovedListener> bookRemovedListeners = new ArrayList<>();
 
     private Map<String, Book> currentBooks = new HashMap<>();
+    private Map<String, String> ingameNametoBookIdMap = new HashMap<>();
 
     // We refresh our library based on our current books and the last time we updated anything.
     abstract protected void refresh(Set<String> currentBooks, ZonedDateTime lastUpdate);
 
-    public void open() {
-        refresh(new HashSet<>(),null);
+    public void start(int intermediateDelay) {
+        if (scheduledThreadPoolExecutor == null) {
+            Logger.getGlobal().info("Starting Library at fixed delay: " + intermediateDelay);
+            scheduledThreadPoolExecutor = Executors.newSingleThreadScheduledExecutor();
+            scheduledThreadPoolExecutor.scheduleWithFixedDelay(this::executingCycle,0, intermediateDelay, TimeUnit.SECONDS);
+        }
+    }
+
+    public void stop() {
+        scheduledThreadPoolExecutor.shutdown();
+    }
+
+    public String getBookIdFromIngameName(String ingameName) {
+        return ingameNametoBookIdMap.get(ingameName);
+    }
+
+    public void restart(int intermediateDelay) {
+        if (scheduledThreadPoolExecutor != null) {
+            scheduledThreadPoolExecutor.shutdown();
+        }
+        start(intermediateDelay);
+    }
+
+    public boolean verifyAccess(String book, Player source, Book.Permission permission) {
+        if (source.hasPermission(permission.getBypassPermission())) {
+            return true;
+        }
+
+        String bookPermission = currentBooks.get(book).getPermission(permission);
+
+        if (bookPermission != null) {
+            return source.hasPermission(bookPermission);
+        }
+        return false;
+    }
+
+    private void executingCycle() {
+        refresh(new HashSet<>(currentBooks.keySet()),lastUpdate);
+        lastUpdate = ZonedDateTime.now();
     }
 
     // Book management
     protected void addBook(Book book) {
         currentBooks.put(book.getBookId(), book);
+        ingameNametoBookIdMap.put(Book.getIngameBookName(book.getBookId()),book.getBookId());
         notifyBookAdded(book);
     }
 
@@ -35,6 +83,7 @@ public abstract class BookLibrary {
 
     protected void removeBook(String bookId) {
         currentBooks.remove(bookId);
+        ingameNametoBookIdMap.remove(Book.getIngameBookName(bookId));
         notifyBookRemoved(bookId);
     }
     // Listener management
@@ -82,10 +131,6 @@ public abstract class BookLibrary {
         }
     }
 
-    public List<ItemStack> getAllBooksAsItemStacks() {
-        return currentBooks.values().stream().map(x -> x.getItem()).collect(Collectors.toList());
-    }
-
     public ItemStack getBook(String bookId) {
         Book book = currentBooks.get(bookId);
         if (book != null) {
@@ -105,4 +150,5 @@ public abstract class BookLibrary {
     public String getIngameBookName(String book) {
         return Book.getIngameBookName(book);
     }
+
 }

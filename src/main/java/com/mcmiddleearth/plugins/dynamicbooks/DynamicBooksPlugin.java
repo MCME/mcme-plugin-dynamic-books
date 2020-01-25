@@ -1,19 +1,17 @@
 package com.mcmiddleearth.plugins.dynamicbooks;
 
 import com.google.common.base.Joiner;
-import com.mcmiddleearth.plugins.dynamicbooks.command.CommandBookArgument;
-import com.mcmiddleearth.plugins.dynamicbooks.command.CommandPlayerArgument;
-import com.mcmiddleearth.plugins.dynamicbooks.command.CommandStringArgument;
+import com.mcmiddleearth.plugins.dynamicbooks.command.BookCommand;
 import com.mcmiddleearth.plugins.dynamicbooks.library.*;
+import com.mcmiddleearth.plugins.dynamicbooks.listener.JoinListener;
 import com.mcmiddleearth.plugins.dynamicbooks.manager.BookManager;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,55 +31,25 @@ public final class DynamicBooksPlugin extends JavaPlugin {
     private BookManager bookManager;
     private BookLibrary bookLibrary;
     private CommandDispatcher<Player> commandDispatcher;
-
-    public DynamicBooksPlugin() {
-    }
+    private JoinListener joinListener;
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         // Plugin startup logic
-        bookLibrary = new OfflineBookLibrary();
-        bookManager = new BookManager(bookLibrary);
+        bookLibrary = new OfflineBookLibrary(getDataFolder());
+        bookManager = new BookManager(bookLibrary, getServer());
+
+        joinListener = new JoinListener(bookManager);
 
         // Check permissions based on spigot
-        bookLibrary.open();
+        bookLibrary.start(getConfig().getInt("refresh.interval", 900));
 
-        this.commandDispatcher = new CommandDispatcher<>();
+        getServer().getPluginManager().registerEvents(joinListener,this);
+        this.commandDispatcher = new BookCommand(this, bookLibrary, bookManager);
 
-        commandDispatcher.register(
-                LiteralArgumentBuilder.<Player>literal("library")
-                        .then(
-                                RequiredArgumentBuilder.<Player, String>argument("action", new CommandStringArgument("give", "open"))
-                                        .then(
-                                                RequiredArgumentBuilder.<Player, String>argument("book", new CommandBookArgument(bookLibrary))
-                                                        .then(
-                                                                RequiredArgumentBuilder.<Player, String>argument("player", new CommandPlayerArgument(getServer()))
-                                                                        .executes(c -> {
-                                                                                    Player player = getServer().getPlayer(c.getArgument("player", String.class));
-                                                                                    doCommand(c.getArgument("action", String.class), c.getArgument("book", String.class), player);
-                                                                                    return 1;
-                                                                                }
-                                                                        )
-                                                        )
-                                                        .executes(c -> {
-                                                            doCommand(c.getArgument("action", String.class), c.getArgument("book", String.class), c.getSource());
-                                                            return 1;
-                                                        })
-                                        )
-                        )
-        );
 
-    }
-
-    private void doCommand(String action, String book, Player source) {
-        switch (action.toLowerCase()) {
-            case "give":
-                bookManager.giveBook(source, book);
-                break;
-            case "open":
-                bookManager.openBook(source, book);
-                break;
-        }
     }
 
     @Override
@@ -124,7 +92,7 @@ public final class DynamicBooksPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        bookLibrary.stop();
     }
 
     public void addListener(LibraryBookAddedListener listener) {

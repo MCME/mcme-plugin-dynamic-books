@@ -5,16 +5,22 @@ import com.mcmiddleearth.plugins.dynamicbooks.jaxb.XmlBook;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class OfflineBookLibrary extends XmlBookLibrary {
 
     private final Unmarshaller unmarshaller;
+    private final File dataFolder;
 
-    public OfflineBookLibrary() {
+    public OfflineBookLibrary(File dataFolder) {
+        this.dataFolder = dataFolder;
+
         Unmarshaller unmarshaller = null;
         try {
             unmarshaller = JAXBContext.newInstance(XmlBook.class).createUnmarshaller();
@@ -26,12 +32,13 @@ public class OfflineBookLibrary extends XmlBookLibrary {
 
     @Override
     public List<XmlBook> fetchXmlBooks(ZonedDateTime lastUpdate) {
-        List<InputStream> files = getAllFiles();
+        Map<String, InputStream> files = getAllFiles();
 
         List<XmlBook> xmlBooks = new ArrayList<>();
-        for (InputStream file : files) {
+        for (Map.Entry<String, InputStream> file : files.entrySet()) {
             try {
-                XmlBook xmlBook = (XmlBook) unmarshaller.unmarshal(file);
+                Logger.getGlobal().info("File: " + file.getKey());
+                XmlBook xmlBook = (XmlBook) unmarshaller.unmarshal(file.getValue());
                 if (xmlBook != null) {
                     xmlBooks.add(xmlBook);
                 }
@@ -42,10 +49,18 @@ public class OfflineBookLibrary extends XmlBookLibrary {
         return xmlBooks;
     }
 
-    private List<InputStream> getAllFiles() {
-        ArrayList<InputStream> inputStreams = new ArrayList<>();
-        inputStreams.add(OfflineBookLibrary.class.getResourceAsStream("/testbook.xml"));
-        inputStreams.add(OfflineBookLibrary.class.getResourceAsStream("/warping-menu.xml"));
+    private Map<String, InputStream> getAllFiles() {
+        Map<String, InputStream> inputStreams = new HashMap<>();
+        for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
+            if (file.getName().toLowerCase().endsWith(".xml")) {
+                try {
+                    Logger.getGlobal().info("Checking if " + file.getName() + " is correct");
+                    inputStreams.put(file.getName(), new FileInputStream(file));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return inputStreams;
     }
 }

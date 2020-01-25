@@ -29,14 +29,15 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!-- Did not remove this plugin since it is easily used for local development. Can remove when required -->
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
                     <outputDirectory>${project.basedir}/../minecraft-server/plugins</outputDirectory>
                 </configuration>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -78,14 +79,8 @@
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>warping-menu.xml</include>
-                    <include>warping-eriador.xml</include>
-                    <include>warping-moria.xml</include>
-                    <include>warping-rohan.xml</include>
-                    <include>warping-gondor.xml</include>
-                    <include>warping-mordor.xml</include>
-                    <include>testbook.xml</include>
                     <include>plugin.yml</include>
+                    <include>config.yml</include>
                 </includes>
             </resource>
         </resources>

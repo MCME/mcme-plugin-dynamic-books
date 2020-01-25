@@ -25,6 +25,16 @@
     <xs:element name="book">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="permissions" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="give" minOccurs="0" type="xs:string"/>
+                            <xs:element name="open" minOccurs="0" type="xs:string"/>
+                            <xs:element name="giveremote" minOccurs="0" type="xs:string"/>
+                            <xs:element name="openremote" minOccurs="0" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
                 <xs:element name="templates" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>

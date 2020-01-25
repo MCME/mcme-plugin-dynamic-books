@@ -1,6 +1,7 @@
 package com.mcmiddleearth.plugins.dynamicbooks.library;
 
 import com.mcmiddleearth.plugins.dynamicbooks.DynamicBooksPlugin;
+import com.mcmiddleearth.plugins.dynamicbooks.books.Book;
 import com.mcmiddleearth.plugins.dynamicbooks.books.BookBuilder;
 import com.mcmiddleearth.plugins.dynamicbooks.jaxb.XmlBook;
 import com.mcmiddleearth.plugins.dynamicbooks.jaxb.XmlTemplate;
@@ -42,6 +43,21 @@ public abstract class XmlBookLibrary extends BookLibrary {
 
                 BookBuilder bookBuilder = new BookBuilder(xmlBook.getId(), xmlBook.getAuthor());
 
+                if (xmlBook.getPermissions() != null) {
+                    if (xmlBook.getPermissions().getGive() != null) {
+                        bookBuilder.withPermission(Book.Permission.GIVE, xmlBook.getPermissions().getGive());
+                    }
+                    if (xmlBook.getPermissions().getOpen() != null) {
+                        bookBuilder.withPermission(Book.Permission.OPEN, xmlBook.getPermissions().getOpen());
+                    }
+                    if (xmlBook.getPermissions().getGiveremote() != null) {
+                        bookBuilder.withPermission(Book.Permission.GIVE_REMOTE, xmlBook.getPermissions().getGiveremote());
+                    }
+                    if (xmlBook.getPermissions().getOpenremote() != null) {
+                        bookBuilder.withPermission(Book.Permission.OPEN_REMOTE, xmlBook.getPermissions().getOpenremote());
+                    }
+                }
+
                 for (XmlBook.XmlPage page : xmlBook.getPage()) {
                     List<BaseComponent[]> baseComponents = new ArrayList<>();
 
@@ -55,13 +71,20 @@ public abstract class XmlBookLibrary extends BookLibrary {
                     }
                     bookBuilder.withPage(baseComponents.stream().flatMap(Stream::of).collect(Collectors.toList()).toArray(new BaseComponent[]{}));
                 }
-                addBook(bookBuilder.build());
+
+                if (currentBooks.remove(xmlBook.getId())) {
+                    updateBook(xmlBook.getId(),bookBuilder.build());
+                } else {
+                    addBook(bookBuilder.build());
+                }
             } catch (BookParsingException exception) {
                 Logger.getGlobal().log(Level.WARNING, exception.getMessage());
             } catch (PageParsingException exception) {
                 Logger.getGlobal().log(Level.WARNING, String.format("Could not parse pages in book %s: %s", xmlBook.getId(), exception.getMessage()));
             }
         }
+
+        currentBooks.forEach(super::removeBook);
     }
 
     private BaseComponent[] newLine() {

@@ -9,3 +9,17 @@ commands:
   library:
     description: library of books
     usage: /library [give|open] [bookId] <player>
+
+permissions:
+  library.give.*:
+    description: e
+    default: false
+  library.open.*:
+    description: Allows the use of all commands.
+    default: false
+  library.giveremote.*:
+    description: e
+    default: false
+  library.openremote.*:
+    description: e
+    default: false

@@ -5,10 +5,7 @@ import com.mcmiddleearth.plugins.dynamicbooks.jaxb.XmlBook;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.logging.Logger;
@@ -42,8 +39,16 @@ public class OfflineBookLibrary extends XmlBookLibrary {
                 if (xmlBook != null) {
                     xmlBooks.add(xmlBook);
                 }
+                Logger.getGlobal().info("Added: " + file.getKey());
             } catch (JAXBException e) {
                 e.printStackTrace();
+                Logger.getGlobal().info("Ignored: " + file.getKey());
+            } finally {
+                try {
+                    file.getValue().close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return xmlBooks;

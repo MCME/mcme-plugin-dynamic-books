@@ -11,7 +11,7 @@
 
     <name>Dynamic Books for MCME</name>
 
-    <description>Provides dynamic books to the mcme universe</description>
+    <description>Provides dynamic books to the mcme universe and allows users to upload them via a FTP server at a fixed rate for refresh</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

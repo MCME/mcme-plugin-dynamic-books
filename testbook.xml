@@ -1,0 +1,8 @@
+<book id="Book1">
+    <pages>
+        <page>
+            Text<x>text2</x>text3 Line 2 <x>is</x> amazing
+            Line 3 is nice
+        </page>
+    </pages>
+</book>

@@ -42,6 +42,7 @@ public class BookManager {
 
     public void refreshPlayerAndRemoveFaultyBooks(Player player) {
         HashMap<Integer, ? extends ItemStack> all = player.getInventory().all(Material.WRITTEN_BOOK);
+        Logger.getGlobal().info("Checking for " + player.getName());
 
         for (Map.Entry<Integer, ? extends ItemStack> bookEntry : all.entrySet()) {
             if (bookEntry.getValue().getItemMeta() != null && bookEntry.getValue().getItemMeta().getLore() != null) {
@@ -49,23 +50,24 @@ public class BookManager {
 
                 boolean found = false;
                 for (String bookString : collect) {
+                    Logger.getGlobal().info("Checking for " + player.getName() + " book " + bookString);
                     String bookIdFromIngameName = bookLibrary.getBookIdFromIngameName(bookString);
                     if (bookIdFromIngameName != null) {
                         found = true;
                         if (bookLibrary.verifyAccess(bookIdFromIngameName, player, GIVE)) {
+                            Logger.getGlobal().info("Updating " +  bookString + " for " + player.getName());
                             player.getInventory().setItem(bookEntry.getKey(), bookLibrary.getBook(bookIdFromIngameName));
                         } else {
+                            Logger.getGlobal().info("Removing (due to access) " +  bookString + " for " + player.getName());
                             player.getInventory().remove(bookEntry.getValue());
                         }
                     }
                 }
                 if (!found) {
+                    Logger.getGlobal().info("Removing unknown element for " + player.getName());
                     player.getInventory().remove(bookEntry.getValue());
                 }
             }
-        }
-        for (String bookId : bookLibrary.getAllBookIds()) {
-            refreshBookForPlayer(bookId, player);
         }
     }
 
@@ -81,8 +83,8 @@ public class BookManager {
         }
     }
 
-    private void refreshBookForPlayer(String bookId, Player onlinePlayer) {
-        HashMap<Integer, ? extends ItemStack> all = onlinePlayer.getInventory().all(Material.WRITTEN_BOOK);
+    private void refreshBookForPlayer(String bookId, Player player) {
+        HashMap<Integer, ? extends ItemStack> all = player.getInventory().all(Material.WRITTEN_BOOK);
         ItemStack book = bookLibrary.getBook(bookId);
 
         if (book == null) {
@@ -92,10 +94,10 @@ public class BookManager {
         for (Map.Entry<Integer, ? extends ItemStack> bookEntry : all.entrySet()) {
             if (bookEntry.getValue().getItemMeta() != null && bookEntry.getValue().getItemMeta().getLore() != null) {
                 if (bookEntry.getValue().getItemMeta().getLore().contains(Book.getIngameBookName(bookId))) {
-                    if (bookLibrary.verifyAccess(bookId, onlinePlayer, GIVE)) {
-                        onlinePlayer.getInventory().setItem(bookEntry.getKey(), book);
+                    if (bookLibrary.verifyAccess(bookId, player, GIVE)) {
+                        player.getInventory().setItem(bookEntry.getKey(), book);
                     } else {
-                        onlinePlayer.getInventory().remove(bookEntry.getValue());
+                        player.getInventory().remove(bookEntry.getValue());
                     }
                 }
             }

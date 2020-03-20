@@ -56,6 +56,7 @@ public class BookManager {
                         found = true;
                         if (bookLibrary.verifyAccess(bookIdFromIngameName, player, GIVE)) {
                             Logger.getGlobal().info("Updating " +  bookString + " for " + player.getName());
+                            player.getInventory().remove(bookEntry.getValue());
                             player.getInventory().setItem(bookEntry.getKey(), bookLibrary.getBook(bookIdFromIngameName));
                         } else {
                             Logger.getGlobal().info("Removing (due to access) " +  bookString + " for " + player.getName());

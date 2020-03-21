@@ -78,7 +78,7 @@ public abstract class BookLibrary {
 
     protected void updateBook(String bookId, Book book) {
         currentBooks.put(bookId, book);
-        notifyBookChanged(book);
+        //notifyBookChanged(book);
     }
 
     protected void removeBook(String bookId) {

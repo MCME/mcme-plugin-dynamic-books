@@ -3,7 +3,7 @@ package com.mcmiddleearth.plugins.dynamicbooks;
 import com.google.common.base.Joiner;
 import com.mcmiddleearth.plugins.dynamicbooks.command.BookCommand;
 import com.mcmiddleearth.plugins.dynamicbooks.library.*;
-import com.mcmiddleearth.plugins.dynamicbooks.listener.JoinListener;
+import com.mcmiddleearth.plugins.dynamicbooks.listener.BookUseListener;
 import com.mcmiddleearth.plugins.dynamicbooks.manager.BookManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -30,7 +30,7 @@ public final class DynamicBooksPlugin extends JavaPlugin {
     private BookManager bookManager;
     private BookLibrary bookLibrary;
     private CommandDispatcher<Player> commandDispatcher;
-    private JoinListener joinListener;
+    private BookUseListener bookUseListener;
 
     @Override
     public void onEnable() {
@@ -40,12 +40,12 @@ public final class DynamicBooksPlugin extends JavaPlugin {
         bookLibrary = new OfflineBookLibrary(getDataFolder());
         bookManager = new BookManager(bookLibrary, getServer());
 
-        joinListener = new JoinListener(bookManager);
+        bookUseListener = new BookUseListener(bookManager);
 
         // Check permissions based on spigot
         bookLibrary.start(getConfig().getInt("refresh.interval", 900));
 
-        getServer().getPluginManager().registerEvents(joinListener,this);
+        getServer().getPluginManager().registerEvents(bookUseListener,this);
         this.commandDispatcher = new BookCommand(this, bookLibrary, bookManager);
 
 

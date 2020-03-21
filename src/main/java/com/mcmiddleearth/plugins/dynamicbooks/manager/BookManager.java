@@ -6,6 +6,7 @@ import com.mcmiddleearth.plugins.dynamicbooks.library.BookLibrary;
 import com.mcmiddleearth.plugins.dynamicbooks.library.LibraryBookChangedListener;
 import org.bukkit.Material;
 import org.bukkit.Server;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

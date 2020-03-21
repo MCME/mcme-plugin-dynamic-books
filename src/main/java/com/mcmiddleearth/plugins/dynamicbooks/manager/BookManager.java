@@ -49,7 +49,6 @@ public class BookManager {
 
             for (String bookString : collect) {
                 if (bookLibrary.verifyAccessByIngameName(bookString, player, GIVE)) {
-                    player.getInventory().remove(itemStack);
                     player.getInventory().setItem(inventoryPosition, bookLibrary.getBookByInGameName(bookString));
                     return;
                 }

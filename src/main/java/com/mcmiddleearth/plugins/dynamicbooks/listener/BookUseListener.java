@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.logging.Logger;
 
@@ -19,11 +20,6 @@ public class BookUseListener implements Listener {
     public BookUseListener(BookManager bookManager) {
         this.bookManager = bookManager;
     }
-//
-//    @EventHandler
-//    public void onPlayerJoin(PlayerJoinEvent event) {
-//        bookManager.refreshPlayerAndRemoveFaultyBooks(event.getPlayer());
-//    }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -36,7 +32,10 @@ public class BookUseListener implements Listener {
         Action action = event.getAction();
 
         if (action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_AIR)) {
-            bookManager.refreshPlayerAndRemoveFaultyBooks(player);
+            /*
+            * We will refresh the specific opened item, if  it  is a book managed by this plugin.
+            * */
+            bookManager.refreshPlayerBook(player, item);
         }
     }
 }

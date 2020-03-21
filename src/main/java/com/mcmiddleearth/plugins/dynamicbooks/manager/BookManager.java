@@ -6,7 +6,6 @@ import com.mcmiddleearth.plugins.dynamicbooks.library.BookLibrary;
 import com.mcmiddleearth.plugins.dynamicbooks.library.LibraryBookChangedListener;
 import org.bukkit.Material;
 import org.bukkit.Server;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,9 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.mcmiddleearth.plugins.dynamicbooks.books.Book.Permission.*;
 
@@ -27,12 +24,6 @@ public class BookManager {
     public BookManager(BookLibrary bookLibrary, Server server) {
         this.bookLibrary = bookLibrary;
 
-        bookLibrary.addListener((LibraryBookChangedListener) (bookId, book) -> {
-            Logger.getGlobal().info("Notified for change " + bookId);
-            for (Player onlinePlayer : server.getOnlinePlayers()) {
-                refreshBookForPlayer(bookId, onlinePlayer);
-            }
-        });
         bookLibrary.addListener(bookId -> {
             Logger.getGlobal().info("Notified for delete " + bookId);
             for (Player onlinePlayer : server.getOnlinePlayers()) {
@@ -41,33 +32,26 @@ public class BookManager {
         });
     }
 
-    public void refreshPlayerAndRemoveFaultyBooks(Player player) {
-        HashMap<Integer, ? extends ItemStack> all = player.getInventory().all(Material.WRITTEN_BOOK);
-        Logger.getGlobal().info("Checking for " + player.getName());
+    public void refreshPlayerBook(Player player, ItemStack itemStack) {
+        if (!itemStack.getType().equals(Material.WRITTEN_BOOK)) {
+            return;
+        }
 
-        for (Map.Entry<Integer, ? extends ItemStack> bookEntry : all.entrySet()) {
-            if (bookEntry.getValue().getItemMeta() != null && bookEntry.getValue().getItemMeta().getLore() != null) {
-                Set<String> collect = bookEntry.getValue().getItemMeta().getLore().stream().filter(lore -> lore.startsWith(DynamicBooksPlugin.BOOK_PREFIX)).collect(Collectors.toSet());
+        if (itemStack.getItemMeta() != null && itemStack.getItemMeta().getLore() != null) {
+            Set<String> collect = itemStack.getItemMeta().getLore().stream().filter(lore -> lore.startsWith(DynamicBooksPlugin.BOOK_PREFIX)).collect(Collectors.toSet());
 
-                boolean found = false;
-                for (String bookString : collect) {
-                    Logger.getGlobal().info("Checking for " + player.getName() + " book " + bookString);
-                    String bookIdFromIngameName = bookLibrary.getBookIdFromIngameName(bookString);
-                    if (bookIdFromIngameName != null) {
-                        found = true;
-                        if (bookLibrary.verifyAccess(bookIdFromIngameName, player, GIVE)) {
-                            Logger.getGlobal().info("Updating " +  bookString + " for " + player.getName());
-                            player.getInventory().remove(bookEntry.getValue());
-                            player.getInventory().setItem(bookEntry.getKey(), bookLibrary.getBook(bookIdFromIngameName));
-                        } else {
-                            Logger.getGlobal().info("Removing (due to access) " +  bookString + " for " + player.getName());
-                            player.getInventory().remove(bookEntry.getValue());
-                        }
-                    }
-                }
-                if (!found) {
-                    Logger.getGlobal().info("Removing unknown element for " + player.getName());
-                    player.getInventory().remove(bookEntry.getValue());
+            if (collect.size() == 0) {
+                return;
+            }
+
+            int inventoryPosition = player.getInventory().first(itemStack);
+            player.getInventory().remove(itemStack);
+
+            for (String bookString : collect) {
+                if (bookLibrary.verifyAccessByIngameName(bookString, player, GIVE)) {
+                    player.getInventory().remove(itemStack);
+                    player.getInventory().setItem(inventoryPosition, bookLibrary.getBookByInGameName(bookString));
+                    return;
                 }
             }
         }
@@ -111,7 +95,7 @@ public class BookManager {
             return;
         }
 
-        if (bookLibrary.verifyAccess(book,source, remote ? GIVE_REMOTE : GIVE)) {
+        if (bookLibrary.verifyAccess(book, source, remote ? GIVE_REMOTE : GIVE)) {
             ItemStack itemBook = bookLibrary.getBook(book);
             for (Map.Entry<Integer, ? extends ItemStack> item : source.getInventory().all(Material.WRITTEN_BOOK).entrySet()) {
                 if (item.getValue() != null && item.getValue().getItemMeta() != null && item.getValue().getItemMeta().getLore() != null) {
@@ -130,7 +114,7 @@ public class BookManager {
             return;
         }
 
-        if(bookLibrary.verifyAccess(book,source, remote ? OPEN_REMOTE : OPEN)) {
+        if (bookLibrary.verifyAccess(book, source, remote ? OPEN_REMOTE : OPEN)) {
             source.openBook(bookLibrary.getBook(book));
         }
     }

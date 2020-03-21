@@ -19,7 +19,6 @@ public abstract class BookLibrary {
     private ZonedDateTime lastUpdate;
 
     private List<LibraryBookAddedListener> bookAddedListeners = new ArrayList<>();
-    private List<LibraryBookChangedListener> bookChangedListeners = new ArrayList<>();
     private List<LibraryBookRemovedListener> bookRemovedListeners = new ArrayList<>();
 
     private Map<String, Book> currentBooks = new HashMap<>();
@@ -51,7 +50,15 @@ public abstract class BookLibrary {
         start(intermediateDelay);
     }
 
+    public boolean verifyAccessByIngameName(String ingameName, Player source,  Book.Permission  permission) {
+        return verifyAccess(getBookIdFromIngameName(ingameName), source, permission);
+    }
+
     public boolean verifyAccess(String book, Player source, Book.Permission permission) {
+        if (book == null) {
+            return false;
+        }
+
         if (source.hasPermission(permission.getBypassPermission())) {
             return true;
         }
@@ -78,7 +85,6 @@ public abstract class BookLibrary {
 
     protected void updateBook(String bookId, Book book) {
         currentBooks.put(bookId, book);
-        //notifyBookChanged(book);
     }
 
     protected void removeBook(String bookId) {
@@ -96,14 +102,6 @@ public abstract class BookLibrary {
         bookAddedListeners.remove(listener);
     }
 
-    public void addListener(LibraryBookChangedListener listener) {
-        bookChangedListeners.add(listener);
-    }
-
-    public void removeListener(LibraryBookChangedListener listener) {
-        bookChangedListeners.remove(listener);
-    }
-
     public void addListener(LibraryBookRemovedListener listener) {
         bookRemovedListeners.add(listener);
     }
@@ -119,16 +117,14 @@ public abstract class BookLibrary {
         }
     }
 
-    private void notifyBookChanged(Book book) {
-        for (LibraryBookChangedListener listener : bookChangedListeners) {
-            listener.handleEvent(book.getBookId(), book);
-        }
-    }
-
     private void notifyBookRemoved(String bookId) {
         for (LibraryBookRemovedListener listener : bookRemovedListeners) {
             listener.handleEvent(bookId);
         }
+    }
+
+    public ItemStack getBookByInGameName(String ingameName) {
+        return getBook(getBookIdFromIngameName(ingameName));
     }
 
     public ItemStack getBook(String bookId) {

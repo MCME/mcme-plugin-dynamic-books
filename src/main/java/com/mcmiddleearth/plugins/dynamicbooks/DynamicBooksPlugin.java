@@ -98,19 +98,11 @@ public final class DynamicBooksPlugin extends JavaPlugin {
         bookLibrary.addListener(listener);
     }
 
-    public void addListener(LibraryBookChangedListener listener) {
-        bookLibrary.addListener(listener);
-    }
-
     public void addListener(LibraryBookRemovedListener listener) {
         bookLibrary.addListener(listener);
     }
 
     public void removeListener(LibraryBookAddedListener listener) {
-        bookLibrary.removeListener(listener);
-    }
-
-    public void removeListener(LibraryBookChangedListener listener) {
         bookLibrary.removeListener(listener);
     }
 

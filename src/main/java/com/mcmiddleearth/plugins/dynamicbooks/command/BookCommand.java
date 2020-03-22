@@ -29,13 +29,13 @@ public class BookCommand extends CommandDispatcher<Player> {
                                                                 RequiredArgumentBuilder.<Player, String>argument("player", new CommandPlayerArgument(bookPlugin.getServer()))
                                                                         .executes(c -> {
                                                                                     Player player = bookPlugin.getServer().getPlayer(c.getArgument("player", String.class));
-                                                                                    doCommand(c.getArgument("action", String.class), c.getArgument("book", String.class), player, true);
+                                                                                    doCommand(c.getArgument("action", String.class), c.getArgument("book", String.class), c.getSource(), player);
                                                                                     return 1;
                                                                                 }
                                                                         )
                                                         )
                                                         .executes(c -> {
-                                                            doCommand(c.getArgument("action", String.class), c.getArgument("book", String.class), c.getSource(), false);
+                                                            doCommand(c.getArgument("action", String.class), c.getArgument("book", String.class), c.getSource(), c.getSource());
                                                             return 1;
                                                         })
                                         )
@@ -43,18 +43,26 @@ public class BookCommand extends CommandDispatcher<Player> {
         );
     }
 
-    private void doCommand(String action, String book, Player source, boolean remote) {
+    private void doCommand(String action, String book, Player source, Player target) {
         switch (action.toLowerCase()) {
             case "give":
-                bookManager.giveBook(source, book, remote);
+                if (source != target) {
+                    bookManager.giveRemoteBook(source, target, book);
+                } else {
+                    bookManager.giveBook(source, book);
+                }
                 break;
             case "open":
-                bookManager.openBook(source, book, remote);
+                if (source != target) {
+                    bookManager.openRemoteBook(source, target, book);
+                } else {
+                    bookManager.openBook(source, book);
+                }
                 break;
             case "reload":
                 if (source.hasPermission("library.reload")) {
                     bookPlugin.reloadConfig();
-                    bookLibrary.restart(bookPlugin.getConfig().getInt("refresh.interval",900));
+                    bookLibrary.restart(bookPlugin.getConfig().getInt("refresh.interval", 900));
                 }
                 break;
         }

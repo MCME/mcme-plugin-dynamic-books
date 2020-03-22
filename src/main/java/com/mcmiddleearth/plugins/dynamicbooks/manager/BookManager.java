@@ -68,33 +68,22 @@ public class BookManager {
         }
     }
 
-    private void refreshBookForPlayer(String bookId, Player player) {
-        HashMap<Integer, ? extends ItemStack> all = player.getInventory().all(Material.WRITTEN_BOOK);
-        ItemStack book = bookLibrary.getBook(bookId);
-
-        if (book == null) {
-            return;
-        }
-
-        for (Map.Entry<Integer, ? extends ItemStack> bookEntry : all.entrySet()) {
-            if (bookEntry.getValue().getItemMeta() != null && bookEntry.getValue().getItemMeta().getLore() != null) {
-                if (bookEntry.getValue().getItemMeta().getLore().contains(Book.getIngameBookName(bookId))) {
-                    if (bookLibrary.verifyAccess(bookId, player, GIVE)) {
-                        player.getInventory().setItem(bookEntry.getKey(), book);
-                    } else {
-                        player.getInventory().remove(bookEntry.getValue());
-                    }
-                }
-            }
-        }
-    }
-
-    public void giveBook(Player source, String book, boolean remote) {
+    public void giveRemoteBook(Player source, Player target, String book) {
         if (source == null || !bookLibrary.exists(book)) {
             return;
         }
 
-        if (bookLibrary.verifyAccess(book, source, remote ? GIVE_REMOTE : GIVE)) {
+        if (bookLibrary.verifyAccess(book, source, GIVE_REMOTE)) {
+            giveBook(target, book);
+        }
+    }
+
+    public void giveBook(Player source, String book) {
+        if (source == null || !bookLibrary.exists(book)) {
+            return;
+        }
+
+        if (bookLibrary.verifyAccess(book, source, GIVE)) {
             ItemStack itemBook = bookLibrary.getBook(book);
             for (Map.Entry<Integer, ? extends ItemStack> item : source.getInventory().all(Material.WRITTEN_BOOK).entrySet()) {
                 if (item.getValue() != null && item.getValue().getItemMeta() != null && item.getValue().getItemMeta().getLore() != null) {
@@ -108,13 +97,23 @@ public class BookManager {
         }
     }
 
-    public void openBook(Player source, String book, boolean remote) {
+    public void openRemoteBook(Player source, Player target, String book) {
         if (source == null || !bookLibrary.exists(book)) {
             return;
         }
 
-        if (bookLibrary.verifyAccess(book, source, remote ? OPEN_REMOTE : OPEN)) {
+        if (bookLibrary.verifyAccess(book, source, OPEN_REMOTE)) {
+            openBook(target, book);
+        }
+    }
+    public void openBook(Player source, String book) {
+        if (source == null || !bookLibrary.exists(book)) {
+            return;
+        }
+
+        if (bookLibrary.verifyAccess(book, source, OPEN)) {
             source.openBook(bookLibrary.getBook(book));
         }
     }
+
 }

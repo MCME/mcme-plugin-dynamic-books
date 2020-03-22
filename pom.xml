@@ -30,14 +30,14 @@
                 </configuration>
             </plugin>
             <!-- Did not remove this plugin since it is easily used for local development. Can remove when required -->
-            <!--<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
                     <outputDirectory>${project.basedir}/../minecraft-server/plugins</outputDirectory>
                 </configuration>
-            </plugin>-->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>

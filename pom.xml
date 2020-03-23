@@ -6,7 +6,7 @@
 
     <groupId>com.mcmiddleearth</groupId>
     <artifactId>plugin-dynamic-books</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Dynamic Books for MCME</name>

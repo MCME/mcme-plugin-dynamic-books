@@ -1,7 +1,7 @@
 name: DynamicBooks
 version: ${project.version}
 main: com.mcmiddleearth.plugins.dynamicbooks.DynamicBooksPlugin
-api-version: 1.13
+api-version: 1.15
 authors: [Quazor]
 description: Provides dynamic books to the mcme universe
 

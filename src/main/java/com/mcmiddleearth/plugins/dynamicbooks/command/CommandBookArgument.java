@@ -47,7 +47,6 @@ public class CommandBookArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        Logger.getGlobal().info("CommandBookArgument Start");
         for (String option : options) {
             if (option.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
                 builder.suggest(option);

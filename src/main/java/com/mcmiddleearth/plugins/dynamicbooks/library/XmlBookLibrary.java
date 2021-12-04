@@ -5,13 +5,13 @@ import com.mcmiddleearth.plugins.dynamicbooks.books.Book;
 import com.mcmiddleearth.plugins.dynamicbooks.books.BookBuilder;
 import com.mcmiddleearth.plugins.dynamicbooks.jaxb.XmlBook;
 import com.mcmiddleearth.plugins.dynamicbooks.jaxb.XmlTemplate;
+import jakarta.xml.bind.JAXBElement;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.ChatColor;
 
-import javax.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;

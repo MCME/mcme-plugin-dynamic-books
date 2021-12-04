@@ -54,16 +54,26 @@
                             <artifactSet>
                                 <includes>
                                    <include>com.sun.xml.bind:*</include>
-                                  <!--  <include>javax.xml.bind:*</include>-->
-                                   <!--<include>javax.xml.bind:*</include>-->
+                                   <include>javax.xml.bind:*</include>
+                                   <include>jakarta.xml.bind:*</include>
                                    <!--<include>org.glassfish.jaxb:*</include>-->
                                 </includes>
                             </artifactSet>
                             <relocations>
-                                 <relocation>
+                                <relocation>
                                     <pattern>com.sun.xml.bind</pattern>
-                                     <!--<shadedPattern>com.sun.xml.internal.bind</shadedPattern>-->
-                                     <shadedPattern>javax.xml.bind</shadedPattern>
+                                    <!--<shadedPattern>com.sun.xml.internal.bind</shadedPattern>-->
+                                    <shadedPattern>com.sun.xml.internal.bind</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>jakarta.xml.bind</pattern>
+                                    <!--<shadedPattern>com.sun.xml.internal.bind</shadedPattern>-->
+                                    <shadedPattern>jakarta.xml.internal.bind</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.xml.bind</pattern>
+                                    <!--<shadedPattern>com.sun.xml.internal.bind</shadedPattern>-->
+                                    <shadedPattern>jakarta.xml.internal.bind</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

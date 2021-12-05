@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public final class DynamicBooksPlugin extends JavaPlugin {
@@ -62,6 +64,7 @@ public final class DynamicBooksPlugin extends JavaPlugin {
                     commandDispatcher.execute(commandDispatcher.parse(label, (Player) sender));
                 }
             } catch (CommandSyntaxException e) {
+                Logger.getLogger(DynamicBooksPlugin.class.getName()).log(Level.SEVERE, "Hullo!", e);
                 e.printStackTrace();
             }
         }

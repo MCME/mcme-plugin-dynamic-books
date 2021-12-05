@@ -37,7 +37,6 @@ public class BookCommand extends CommandDispatcher<Player> {
                                                                         )
                                                         )
                                                         .executes(c -> {
-Logger.getGlobal().info("Excecte!°");
                                                             doCommand(c.getArgument("action", String.class), c.getArgument("book", String.class), c.getSource(), c.getSource());
                                                             return 1;
                                                         })
@@ -49,13 +48,11 @@ Logger.getGlobal().info("Excecte!°");
     private void doCommand(String action, String book, Player source, Player target) {
         switch (action.toLowerCase()) {
             case "give":
-Logger.getGlobal().info("Give!°");
                 if (source != target) {
                     bookManager.giveRemoteBook(source, target, book);
                 } else {
                     bookManager.giveBook(source, book);
                 }
-Logger.getGlobal().info("Doene!°");
                 break;
             case "open":
                 if (source != target) {

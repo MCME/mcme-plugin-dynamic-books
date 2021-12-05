@@ -27,8 +27,6 @@ public class CommandStringArgument implements ArgumentType<String> {
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
         String o = reader.readString();
-Logger.getGlobal().info("Parse: "+o);
-options.forEach(option->Logger.getGlobal().info("O: "+option));
         if (options.contains(o)) {
             return o;
         }

@@ -8,6 +8,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import org.bukkit.entity.Player;
 
+import java.util.logging.Logger;
+
 public class BookCommand extends CommandDispatcher<Player> {
 
     private final BookLibrary bookLibrary;

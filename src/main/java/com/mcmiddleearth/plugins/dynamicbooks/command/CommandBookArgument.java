@@ -37,7 +37,7 @@ public class CommandBookArgument implements ArgumentType<String> {
         if (options.contains(o)) {
             return o;
         }
-        throw new CommandSyntaxException(new SimpleCommandExceptionType(new LiteralMessage("Failed parsing during action evaluation")), new LiteralMessage("Failed parsing during action evaluation on action:" + o));
+        throw new CommandSyntaxException(new SimpleCommandExceptionType(new LiteralMessage("Failed parsing during book evaluation")), new LiteralMessage("Failed parsing during action evaluation on action:" + o));
     }
 
     @Override
